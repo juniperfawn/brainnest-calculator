@@ -43,7 +43,7 @@ class Calculator {
                 this.displayed_value = converted_value;
                 this.command_pressed = false;
             } else {
-                if(this.displayed_value.contains(".") && converted_value == "."){
+                if (this.displayed_value.includes(".") && converted_value == ".") {
                     return;
                 }
                 this.displayed_value += converted_value;
@@ -54,7 +54,7 @@ class Calculator {
     }
 
     new_operation(operator) {
-        if(this.pending == true){
+        if (this.pending == true) {
             this.execute();
         }
         this.operation = operator;
@@ -83,10 +83,10 @@ class Calculator {
         }
         this.command_pressed = true;
         let result = this.operation.calculate(this.displayed_value);
-         if(result == "illegal"){
-                this.all_clear();
-              return result;
-          }
+        if (result == "illegal") {
+            this.all_clear();
+            return result;
+        }
         result = result.toString();
         this.history.push(this.operation);
         this.displayed_value = result.slice(0, MAX_NUM_DISPLAY_CHARS);
@@ -187,34 +187,23 @@ class RemainderCmd extends BaseCmd {
 let calc = new Calculator();
 calc.update_visual(2);
 calc.new_operation(new SubtractCmd(calc.displayed_value));
-//calc.new_operation(calc.subtract);
 calc.update_visual(4);
 let result = calc.execute() //-2
 calc.new_operation(new AddCmd(calc.displayed_value)); // -2 +
-// but what happens if we hit the buttons a bunch of times?
 calc.new_operation(new AddCmd(calc.displayed_value));
+calc.update_visual(3);
 calc.new_operation(new AddCmd(calc.displayed_value));
 calc.new_operation(new SubtractCmd(calc.displayed_value));
-calc.new_operation(new DivideCmd(calc.displayed_value)); 
-    // No issue!  Because we're handling the history only when we "execute()""
-    // However calculators usually execute the previously entered value if you press an operation again.  Perhaps this is something you can add later as a "stretch goal" if you have time.
+calc.new_operation(new SubtractCmd(calc.displayed_value));
+calc.update_visual(5);
+calc.new_operation(new MultiplyCmd(calc.displayed_value));
+calc.new_operation(new MultiplyCmd(calc.displayed_value));
+calc.new_operation(new DivideCmd(calc.displayed_value));
 
 calc.update_visual(8);
-calc.new_operation(new MultiplyCmd(calc.displayed_value));
-calc.update_visual(3.4);
-calc.new_operation(new SubtractCmd(calc.displayed_value));
-calc.update_visual(2);
-calc.execute();
-
-
+calc.update_visual(".");
+calc.update_visual(3);
+calc.execute()
 
 console.log(calc.displayed_value);
 console.log(calc.display_history());
-  //console.log(calc.history);
-
-  //order of operations function?? --> a + b = total --> (next operation (-)) --> total (next operation (-)) --> total
-  //limits of operations for history
-  //2 + 4
-  //6 + 8.3
-  //limits of decimals
-  //divided by zero doesn't work 
