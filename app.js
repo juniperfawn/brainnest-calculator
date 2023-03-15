@@ -6,6 +6,7 @@ class Calculator {
         this.displayed_value = "0"; //big value displayed
         this.history = []; //small display of what has last been calculated 
         this.command_pressed = false;
+        this.pending = false;
     }
 
     all_clear() {
@@ -13,6 +14,7 @@ class Calculator {
         this.displayed_value = "0";
         this.history = [];
         this.command_pressed = false;
+        this.pending = false;
     }
 
     delete() {
@@ -34,18 +36,27 @@ class Calculator {
 
         if (this.displayed_value == "0") {
             this.displayed_value = converted_value;
+        } else if (this.displayed_value == "illegal") {
+            this.displayed_value = converted_value;
         } else {
             if (this.command_pressed == true) {
                 this.displayed_value = converted_value;
                 this.command_pressed = false;
             } else {
+                if(this.displayed_value.contains(".") && converted_value == "."){
+                    return;
+                }
                 this.displayed_value += converted_value;
             }
         }
         this.displayed_value = this.displayed_value.slice(0, MAX_NUM_DISPLAY_CHARS);
+        this.pending = true;
     }
 
     new_operation(operator) {
+        if(this.pending == true){
+            this.execute();
+        }
         this.operation = operator;
         this.command_pressed = true;
         //this.execute();
@@ -72,9 +83,14 @@ class Calculator {
         }
         this.command_pressed = true;
         let result = this.operation.calculate(this.displayed_value);
+         if(result == "illegal"){
+                this.all_clear();
+              return result;
+          }
         result = result.toString();
         this.history.push(this.operation);
         this.displayed_value = result.slice(0, MAX_NUM_DISPLAY_CHARS);
+        this.pending = false;
         return result;
     }
 }
@@ -148,6 +164,9 @@ class DivideCmd extends BaseCmd {
     calculate(value) {
         value = this.convert_value(value);
         this.b = value;
+        if (value == 0) {
+            return "illegal";
+        }
         return this.a / value;
     }
 }
@@ -176,23 +195,26 @@ calc.new_operation(new AddCmd(calc.displayed_value)); // -2 +
 calc.new_operation(new AddCmd(calc.displayed_value));
 calc.new_operation(new AddCmd(calc.displayed_value));
 calc.new_operation(new SubtractCmd(calc.displayed_value));
-calc.new_operation(new AddCmd(calc.displayed_value)); +
-// No issue!  Because we're handling the history only when we "execute()""
-// However calculators usually execute the previously entered value if you press an operation again.  Perhaps this is something you can add later as a "stretch goal" if you have time.
+calc.new_operation(new DivideCmd(calc.displayed_value)); 
+    // No issue!  Because we're handling the history only when we "execute()""
+    // However calculators usually execute the previously entered value if you press an operation again.  Perhaps this is something you can add later as a "stretch goal" if you have time.
 
 calc.update_visual(8);
-calc.update_visual(".");
-calc.update_visual(3);
-calc.execute()
+calc.new_operation(new MultiplyCmd(calc.displayed_value));
+calc.update_visual(3.4);
+calc.new_operation(new SubtractCmd(calc.displayed_value));
+calc.update_visual(2);
+calc.execute();
+
 
 
 console.log(calc.displayed_value);
 console.log(calc.display_history());
   //console.log(calc.history);
 
-  //order of operations function?? --> a + b = total --> (next operation (-)) --> total (next operation (-)) --> total 
-  //limits of operations for history 
-  //2 + 4 
+  //order of operations function?? --> a + b = total --> (next operation (-)) --> total (next operation (-)) --> total
+  //limits of operations for history
+  //2 + 4
   //6 + 8.3
-  //limits of decimals 
+  //limits of decimals
   //divided by zero doesn't work 
