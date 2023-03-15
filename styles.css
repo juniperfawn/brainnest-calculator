@@ -136,6 +136,7 @@ body {
     inset: 50% auto auto 50%;
     transform: translateY(-50%) translateX(-50%);
     color: var(--text-color-regular);
+    font-weight: bold;
 }
 
 .keyboard__key--operator {
@@ -145,6 +146,7 @@ body {
 
 .keyboard__key--operator > .keyboard__keyVal {
     color: var(--text-color-operator);
+    text-shadow: 2px 2px 10px #333333;
 }
 
 .keyboard__row>.keyboard__key--colspan {
