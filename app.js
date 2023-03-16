@@ -51,9 +51,7 @@ class Calculator {
     update_visual(value) {
         let converted_value = value + '';
 
-        if (this.displayed_value == "0") {
-            this.displayed_value = converted_value;
-        } else if (this.displayed_value == "illegal") {
+        if (this.displayed_value == "0" || this.displayed_value == "illegal") {
             this.displayed_value = converted_value;
         } else {
             if (this.command_pressed == true) {
@@ -78,7 +76,6 @@ class Calculator {
         this.operation = operator;
         this.command_pressed = true;
         this.operation.set_a(this.displayed_value);
-        //this.execute();
     }
 
     display_history() {
@@ -107,10 +104,6 @@ class Calculator {
         }
         this.command_pressed = true;
         let result = this.operation.calculate(this.displayed_value);
-        // if (result == "illegal") {
-        //     this.all_clear();
-        //     return result;
-        // }
         result = result.toString();
         this.history.push(this.operation);
         this.displayed_value = result.slice(0, MAX_NUM_DISPLAY_CHARS);
@@ -127,7 +120,7 @@ class BaseCmd {
     }
 
     //convert the value to a float type if possible 
-    set_a(value){
+    set_a(value) {
         this.a = this.convert_value(value);
     }
 
