@@ -93,6 +93,7 @@ body {
 .display__operation {
     font-size: 2em;
     color: var(--text-color-operation);
+    min-height: 1.2em;
 }
 
 .keyboard {
