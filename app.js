@@ -1,3 +1,9 @@
+// UI Components
+const keys = document.getElementsByClassName('keyboard__key');
+const resultDisp = document.querySelector('.display__result');
+const historyDisp = document.querySelector('.display__operation');
+
+
 // ***************  Light / Dark mode toggle ****************************
 function toggleSchemeMode() {
     const toggleBtn = document.getElementById('toggle__button');
@@ -58,6 +64,8 @@ class Calculator {
         }
         this.displayed_value = this.displayed_value.slice(0, MAX_NUM_DISPLAY_CHARS);
         this.pending = true;
+
+        // updateUI();
     }
 
     new_operation(operator) {
@@ -90,15 +98,16 @@ class Calculator {
         }
         this.command_pressed = true;
         let result = this.operation.calculate(this.displayed_value);
-        if (result == "illegal") {
-            this.all_clear();
-            return result;
-        }
+        // if (result == "illegal") {
+        //     this.all_clear();
+        //     return result;
+        // }
         result = result.toString();
         this.history.push(this.operation);
         this.displayed_value = result.slice(0, MAX_NUM_DISPLAY_CHARS);
         this.pending = false;
-        return result;
+        
+        updateUI();
     }
 }
 
@@ -111,14 +120,7 @@ class BaseCmd {
 
     //convert the value to a float type if possible 
     convert_value(value) {
-        switch (typeof value) {
-            case "number":
-                return value;
-            case "string":
-                return parseFloat(value);
-            default:
-                break;
-        }
+        return value + '';
     }
 }
 
@@ -191,32 +193,53 @@ class RemainderCmd extends BaseCmd {
     }
 }
 
+
+// ************************ Dom Manip ***************************
 let calc = new Calculator();
-calc.update_visual(2);
-calc.new_operation(new SubtractCmd(calc.displayed_value));
-calc.update_visual(4);
-let result = calc.execute() //-2
-calc.new_operation(new AddCmd(calc.displayed_value)); // -2 +
-calc.new_operation(new AddCmd(calc.displayed_value));
-calc.update_visual(3);
-calc.new_operation(new AddCmd(calc.displayed_value));
-calc.new_operation(new SubtractCmd(calc.displayed_value));
-calc.new_operation(new AddCmd(calc.displayed_value));
-// No issue!  Because we're handling the history only when we "execute()""
-// However calculators usually execute the previously entered value if you press an operation again.  Perhaps this is something you can add later as a "stretch goal" if you have time.
 
-calc.update_visual(8);
-calc.update_visual(".");
-calc.update_visual(3);
-calc.execute()
+function updateUI() {
+    // Update UI
+    resultDisp.textContent = calc.displayed_value;
+    historyDisp.textContent = calc.display_history();
+}
 
-console.log(calc.displayed_value);
-console.log(calc.display_history());
-  //console.log(calc.history);
+function action(symbol) {
+    switch (symbol) {
+        case '+':
+            calc.new_operation(new AddCmd(calc.displayed_value));
+            break;
+        case '-':
+            calc.new_operation(new SubtractCmd(calc.displayed_value));
+            break;
+        case 'x':
+            calc.new_operation(new MultiplyCmd(calc.displayed_value));
+            break;
+        case '/':
+            calc.new_operation(new DivideCmd(calc.displayed_value));
+            break;
+        case '%':
+            calc.new_operation(new RemainderCmd(calc.displayed_value));
+        case 'AC':
+            calc.all_clear();
+            break;
+        case 'Del':
+            calc.delete();
+            break;
+        case '=':
+            calc.execute();
+            break;
+        default:
+            calc.update_visual(symbol);
+            break;
+    }
+}
 
-  //order of operations function?? --> a + b = total --> (next operation (-)) --> total (next operation (-)) --> total
-  //limits of operations for history
-  //2 + 4
-  //6 + 8.3
-  //limits of decimals
-  //divided by zero doesn't work 
+for (let i = 0; i < keys.length; i++) {
+    keys[i].addEventListener('click', (e) => {
+        action(keys[i].firstElementChild.textContent);
+        updateUI();
+
+        console.log(calc.displayed_value);
+        console.log(calc.display_history());
+    })
+}
