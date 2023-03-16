@@ -49,7 +49,6 @@ class Calculator {
     }
 
     update_visual(value) {
-        console.log("here");
         let converted_value = value + '';
 
         if (this.displayed_value == "0") {
