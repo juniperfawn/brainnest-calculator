@@ -41,10 +41,15 @@ class Calculator {
     }
 
     delete() {
+        if (this.displayed_value.length == 1) {
+            this.displayed_value = "0";
+            return;
+        }
         this.displayed_value = this.displayed_value.slice(0, -1);
     }
 
     update_visual(value) {
+        console.log("here");
         let converted_value = value + '';
 
         if (this.displayed_value == "0") {
@@ -64,7 +69,6 @@ class Calculator {
         }
         this.displayed_value = this.displayed_value.slice(0, MAX_NUM_DISPLAY_CHARS);
         this.pending = true;
-
         // updateUI();
     }
 
@@ -74,6 +78,7 @@ class Calculator {
         }
         this.operation = operator;
         this.command_pressed = true;
+        this.operation.set_a(this.displayed_value);
         //this.execute();
     }
 
@@ -89,6 +94,11 @@ class Calculator {
             history_string += this.history[i].b;
             history_string += " ";
         }
+        let string_start_index = history_string.length - 26;
+        if (string_start_index < 0) {
+            string_start_index = 0;
+        }
+        history_string = history_string.slice(string_start_index, history_string.length); //trying to limit history of string displayed 
         return history_string;
     }
 
@@ -106,27 +116,37 @@ class Calculator {
         this.history.push(this.operation);
         this.displayed_value = result.slice(0, MAX_NUM_DISPLAY_CHARS);
         this.pending = false;
-        
+
         updateUI();
     }
 }
 
 class BaseCmd {
-    constructor(value) {
-        value = this.convert_value(value);
-        this.a = value;
+    constructor() {
+        this.a = 0;
         this.b = 0; // used for the historical reference later
     }
 
     //convert the value to a float type if possible 
+    set_a(value){
+        this.a = this.convert_value(value);
+    }
+
     convert_value(value) {
-        return value + '';
+        switch (typeof value) {
+            case "number":
+                return value;
+            case "string":
+                return parseFloat(value);
+            default:
+                break;
+        }
     }
 }
 
 class SubtractCmd extends BaseCmd {
-    constructor(value) {
-        super(value);
+    constructor() {
+        super();
         this.symbol = "-";
     }
 
@@ -139,8 +159,8 @@ class SubtractCmd extends BaseCmd {
 }
 
 class AddCmd extends BaseCmd {
-    constructor(value) {
-        super(value);
+    constructor() {
+        super();
         this.symbol = "+";
     }
 
@@ -152,8 +172,8 @@ class AddCmd extends BaseCmd {
 }
 
 class MultiplyCmd extends BaseCmd {
-    constructor(value) {
-        super(value);
+    constructor() {
+        super();
         this.symbol = "*";
     }
 
@@ -165,8 +185,8 @@ class MultiplyCmd extends BaseCmd {
 }
 
 class DivideCmd extends BaseCmd {
-    constructor(value) {
-        super(value);
+    constructor() {
+        super();
         this.symbol = "/";
     }
 
@@ -181,8 +201,8 @@ class DivideCmd extends BaseCmd {
 }
 
 class RemainderCmd extends BaseCmd {
-    constructor(value) {
-        super(value);
+    constructor() {
+        super();
         this.symbol = "%";
     }
 
@@ -206,19 +226,20 @@ function updateUI() {
 function action(symbol) {
     switch (symbol) {
         case '+':
-            calc.new_operation(new AddCmd(calc.displayed_value));
+            calc.new_operation(new AddCmd());
             break;
         case '-':
-            calc.new_operation(new SubtractCmd(calc.displayed_value));
+            calc.new_operation(new SubtractCmd());
             break;
         case 'x':
-            calc.new_operation(new MultiplyCmd(calc.displayed_value));
+            calc.new_operation(new MultiplyCmd());
             break;
         case '/':
-            calc.new_operation(new DivideCmd(calc.displayed_value));
+            calc.new_operation(new DivideCmd());
             break;
         case '%':
-            calc.new_operation(new RemainderCmd(calc.displayed_value));
+            calc.new_operation(new RemainderCmd());
+            break;
         case 'AC':
             calc.all_clear();
             break;
