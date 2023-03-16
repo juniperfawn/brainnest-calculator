@@ -219,6 +219,7 @@ function action(symbol) {
             break;
         case '%':
             calc.new_operation(new RemainderCmd(calc.displayed_value));
+            break;
         case 'AC':
             calc.all_clear();
             break;
