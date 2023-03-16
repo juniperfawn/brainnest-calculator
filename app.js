@@ -1,3 +1,20 @@
+// ***************  Light / Dark mode toggle ****************************
+function toggleSchemeMode() {
+    const toggleBtn = document.getElementById('toggle__button');
+    const rootEl = document.documentElement;
+
+    toggleBtn.addEventListener('click', () => {
+        toggleBtn.classList.toggle('toggle__button--dark');
+        rootEl.classList.toggle('darkModeRoot');
+    })
+}
+
+toggleSchemeMode();
+
+// ************************************************************************
+
+
+// **************** Operations Logic **************************************
 const MAX_NUM_DISPLAY_CHARS = 8;
 
 class Calculator {
@@ -22,17 +39,7 @@ class Calculator {
     }
 
     update_visual(value) {
-        let converted_value;
-        switch (typeof value) {
-            case "number" || "float":
-                converted_value = value.toString();
-                break;
-            case "string":
-                converted_value = value;
-                break;
-            default:
-                break;
-        }
+        let converted_value = value + '';
 
         if (this.displayed_value == "0") {
             this.displayed_value = converted_value;
@@ -194,11 +201,9 @@ calc.new_operation(new AddCmd(calc.displayed_value));
 calc.update_visual(3);
 calc.new_operation(new AddCmd(calc.displayed_value));
 calc.new_operation(new SubtractCmd(calc.displayed_value));
-calc.new_operation(new SubtractCmd(calc.displayed_value));
-calc.update_visual(5);
-calc.new_operation(new MultiplyCmd(calc.displayed_value));
-calc.new_operation(new MultiplyCmd(calc.displayed_value));
-calc.new_operation(new DivideCmd(calc.displayed_value));
+calc.new_operation(new AddCmd(calc.displayed_value));
+// No issue!  Because we're handling the history only when we "execute()""
+// However calculators usually execute the previously entered value if you press an operation again.  Perhaps this is something you can add later as a "stretch goal" if you have time.
 
 calc.update_visual(8);
 calc.update_visual(".");
@@ -207,3 +212,11 @@ calc.execute()
 
 console.log(calc.displayed_value);
 console.log(calc.display_history());
+  //console.log(calc.history);
+
+  //order of operations function?? --> a + b = total --> (next operation (-)) --> total (next operation (-)) --> total
+  //limits of operations for history
+  //2 + 4
+  //6 + 8.3
+  //limits of decimals
+  //divided by zero doesn't work 
