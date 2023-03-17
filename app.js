@@ -1,9 +1,3 @@
-// UI Components
-const keys = document.getElementsByClassName('keyboard__key');
-const resultDisp = document.querySelector('.display__result');
-const historyDisp = document.querySelector('.display__operation');
-
-
 // ***************  Light / Dark mode toggle ****************************
 function toggleSchemeMode() {
     const toggleBtn = document.getElementById('toggle__button');
@@ -66,7 +60,7 @@ class Calculator {
         }
         this.displayed_value = this.displayed_value.slice(0, MAX_NUM_DISPLAY_CHARS);
         this.pending = true;
-        // updateUI();
+
     }
 
     new_operation(operator) {
@@ -207,6 +201,12 @@ class RemainderCmd extends BaseCmd {
 
 
 // ************************ Dom Manip ***************************
+// UI Components
+const keys = document.getElementsByClassName('keyboard__key');
+const resultDisp = document.querySelector('.display__result');
+const historyDisp = document.querySelector('.display__operation');
+
+
 let calc = new Calculator();
 
 function updateUI() {
@@ -233,18 +233,20 @@ function action(symbol) {
             calc.new_operation(new RemainderCmd());
             break;
         case 'AC':
+        case 'Escape':
             calc.all_clear();
             break;
         case 'Del':
+        case 'Backspace':
             calc.delete();
             break;
         case '=':
+        case 'Enter':
             calc.execute();
             break;
-        default:
-            calc.update_visual(symbol);
-            break;
     }
+    if (!isNaN(symbol))
+        calc.update_visual(symbol);
 }
 
 for (let i = 0; i < keys.length; i++) {
@@ -256,3 +258,19 @@ for (let i = 0; i < keys.length; i++) {
         console.log(calc.display_history());
     })
 }
+
+// ********* Physical Keyboard Functionality ***********
+
+const possibleOperations = ['+', '-', '%', '*', '=', 'Enter', '/', 'Backspace', 'Escape'];
+window.addEventListener('keydown', (e) => {
+    const key = e.key;
+    if (possibleOperations.includes(key) || !isNaN(key)) {
+
+        if (key == '*')
+            key = 'x';
+
+        action(key);
+        updateUI();
+        console.log(key + ' ' + typeof key);
+    }
+}); 
