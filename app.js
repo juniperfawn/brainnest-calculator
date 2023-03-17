@@ -84,7 +84,7 @@ class Calculator {
             history_string += this.history[i].b;
             history_string += " ";
         }
-        let string_start_index = history_string.length - 26;
+        let string_start_index = history_string.length - 20;
         if (string_start_index < 0) {
             string_start_index = 0;
         }
@@ -252,6 +252,8 @@ function action(symbol) {
 for (let i = 0; i < keys.length; i++) {
     keys[i].addEventListener('click', (e) => {
         action(keys[i].firstElementChild.textContent);
+        e.target.style.boxShadow = '2px 2px 10px #000000';
+        setTimeout(() => e.target.style.boxShadow = '', 300);
         updateUI();
 
         console.log(calc.displayed_value);
@@ -268,7 +270,10 @@ window.addEventListener('keydown', (e) => {
 
         if (key == '*')
             key = 'x';
+        else if(key == '/')
+            e.preventDefault();
 
+        
         action(key);
         updateUI();
         console.log(key + ' ' + typeof key);
