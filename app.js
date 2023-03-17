@@ -245,7 +245,7 @@ function action(symbol) {
             calc.execute();
             break;
     }
-    if (!isNaN(symbol))
+    if (!isNaN(symbol) || symbol == '.')
         calc.update_visual(symbol);
 }
 
@@ -261,9 +261,9 @@ for (let i = 0; i < keys.length; i++) {
 
 // ********* Physical Keyboard Functionality ***********
 
-const possibleOperations = ['+', '-', '%', '*', '=', 'Enter', '/', 'Backspace', 'Escape'];
+const possibleOperations = ['+', '-', '%', '*', '=', '.', 'Enter', '/', 'Backspace', 'Escape'];
 window.addEventListener('keydown', (e) => {
-    const key = e.key;
+    let key = e.key;
     if (possibleOperations.includes(key) || !isNaN(key)) {
 
         if (key == '*')
