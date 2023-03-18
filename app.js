@@ -253,7 +253,7 @@ for (let i = 0; i < keys.length; i++) {
     keys[i].addEventListener('click', (e) => {
         action(keys[i].firstElementChild.textContent);
         e.target.style.boxShadow = '2px 2px 10px #000000';
-        setTimeout(() => e.target.style.boxShadow = '', 300);
+        setTimeout(() => e.target.style.boxShadow = '', 200);
         updateUI();
 
         console.log(calc.displayed_value);
