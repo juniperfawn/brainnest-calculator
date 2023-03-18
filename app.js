@@ -59,7 +59,9 @@ class Calculator {
             }
         }
         this.displayed_value = this.displayed_value.slice(0, MAX_NUM_DISPLAY_CHARS);
-        this.pending = true;
+       if (this.operation != null) {
+            this.pending = true;
+        }
 
     }
 
@@ -270,10 +272,10 @@ window.addEventListener('keydown', (e) => {
 
         if (key == '*')
             key = 'x';
-        else if(key == '/')
+        else if (key == '/')
             e.preventDefault();
 
-        
+
         action(key);
         updateUI();
         console.log(key + ' ' + typeof key);
