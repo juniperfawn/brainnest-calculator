@@ -1,5 +1,5 @@
 # Calculator
-Live site : https://juniperfawn.github.io/brainnest-calculator/
+Live site : https://juniperfawn.github.io/calculator/
 
 #### Dev Team :
 - Youcef Kessas
